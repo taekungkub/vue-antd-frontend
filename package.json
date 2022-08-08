@@ -1,0 +1,29 @@
+{
+  "name": "vue-antd",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "ant-design-vue": "^3.2.9",
+    "antd-css-utilities": "^1.0.3",
+    "apexcharts": "^3.35.3",
+    "pinia": "^2.0.16",
+    "unplugin-vue-components": "^0.21.0",
+    "vue": "^3.2.25",
+    "vue-router": "^4.0.12",
+    "vue3-apexcharts": "^1.4.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.3.3",
+    "less": "^4.1.3",
+    "less-loader": "^11.0.0",
+    "sass": "1.26.8",
+    "sass-loader": "8.0.2",
+    "stylus": "^0.58.1",
+    "vite": "^2.9.9"
+  }
+}
