@@ -1,120 +1,146 @@
 <template>
-
   <a-row :gutter="[16, 24]">
     <a-col span="24" :md="8">
       <a-card :style="{ borderRadius: '8px' }">
-        <a-divider orientation="left" orientation-margin="0px">
-          Abount Me</a-divider>
-        <div class="d-flex  justify-center items-center">
+        <a-divider orientation="left" orientation-margin="0px"> Abount Me</a-divider>
+        <Flex align-items="center" :justify="'center'">
           <a-avatar :size="120" src="https://joeschmoe.io/api/v1/random" :style="{ border: '2px solid red' }" />
+        </Flex>
+        <div :style="{ textAlign: 'center' }">
+          <h2 style="margin-top: 10px !important">{{ userStore.info.user_displayname }}</h2>
+          <h2>Status: {{ userStore.info.is_verify === 1 ? "Active" : "No active" }}</h2>
+          <h2>Role: {{ userStore.info.role_title }}</h2>
         </div>
-        <div class="text-center mt-2">
-          <h1 class=" ">Kieattisak Suaprit</h1>
-          <p>Status:Active</p>
-          <p>Role:Developer</p>
-        </div>
-        <a-divider orientation="left" orientation-margin="0px">
-          Education</a-divider>
-        <p>
-          JS in Computer Science from the University of Technology
-
-        </p>
-        <a-divider orientation="left" orientation-margin="0px">
-          Skills</a-divider>
-        <div>Vue</div>
-        <a-progress :percent="80" strokeColor="#1DA57A" />
-        <div>Javascript</div>
-        <a-progress :percent="80" />
-        <div>Tailwind</div>
-        <a-progress :percent="60" />
-        <div>Flutter</div>
-        <a-progress :percent="40" strokeColor="#1DA57A" />
+        <a-divider orientation="left" orientation-margin="0px"> Infomation</a-divider>
       </a-card>
     </a-col>
 
     <a-col :span="24" :md="16">
-      <a-card :style="{ borderRadius: '8px', }">
+      <a-card :style="{ borderRadius: '8px' }">
         <h1>Activity Timeline</h1>
 
         <a-tabs v-model:activeKey="activeKey">
-          <a-tab-pane key="1" tab="Timeline">
-            <a-timeline>
-              <a-timeline-item color="green">Create a services site 2015-09-01</a-timeline-item>
-              <a-timeline-item color="green">Create a services site 2015-09-01</a-timeline-item>
-              <a-timeline-item color="red">
-                <p>2015-09-01</p>
-                <div :style="{ borderRadius: '8px', padding: '20px', boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)' }">
-                  <h1>Update Github template</h1>
-                  <p>
-                    PanJiaChen committed 2019/4/20 20:46</p>
-                </div>
-              </a-timeline-item>
-              <a-timeline-item>
-                <p>Technical testing 1</p>
-                <p>Technical testing 2</p>
-                <p>Technical testing 3 2015-09-01</p>
-              </a-timeline-item>
-              <a-timeline-item color="gray">
-                <p>Technical testing 1</p>
-                <p>Technical testing 2</p>
-                <p>Technical testing 3 2015-09-01</p>
-              </a-timeline-item>
-              <a-timeline-item color="gray">
-                <p>Technical testing 1</p>
-                <p>Technical testing 2</p>
-                <p>Technical testing 3 2015-09-01</p>
-              </a-timeline-item>
-              <a-timeline-item color="#00CCFF">
-
-                <p>Custom color testing</p>
-              </a-timeline-item>
-            </a-timeline>
-          </a-tab-pane>
-          <a-tab-pane key="2" tab="Account" force-render>
-            <a-form :model="formState" name="basic" autocomplete=" off" @finish="onFinish"
-              @finishFailed="onFinishFailed">
-              <div class="mb-1">Username</div>
-              <a-form-item name="username" :rules="[{ required: true, message: 'Please input your username!' }]">
-                <a-input v-model:value="formState.username" />
+          <a-tab-pane key="1" tab="Change profile">
+            <a-form :model="formProfile" name="basic" autocomplete=" off" @finish="onChangeProfile" @finishFailed="onFinishFailed">
+              <div class="mb-1">Displayname</div>
+              <a-form-item name="user_displayname" :rules="[{ required: true }]">
+                <a-input v-model:value="formProfile.user_displayname" />
               </a-form-item>
-              <div class="mb-1">Password</div>
-              <a-form-item name="password" :rules="[{ required: true, message: 'Please input your password!' }]">
-                <a-input-password v-model:value="formState.password" />
+              <div class="mb-1">Telephone</div>
+              <a-form-item name="user_tel" :rules="[{ required: true, type: 'number' }]">
+                <a-input v-model:value.number="formProfile.user_tel" />
               </a-form-item>
-
 
               <a-form-item>
                 <a-button type="primary" html-type="submit">Submit</a-button>
               </a-form-item>
             </a-form>
           </a-tab-pane>
+          <a-tab-pane key="2" tab="Change password" force-render>
+            <a-form :model="formState" name="basic" autocomplete=" off" @finish="onChangePassword" @finishFailed="onFinishFailed">
+              <div class="mb-1">Passsword</div>
+              <a-form-item name="password" :rules="[{ required: true }]">
+                <a-input v-model:value="formState.password" />
+              </a-form-item>
+              <div class="mb-1">Confirm Password</div>
+              <a-form-item name="confirm_password" :rules="[{ required: true }]">
+                <a-input-password v-model:value="formState.confirm_password" />
+              </a-form-item>
 
+              <a-form-item>
+                <a-button type="primary" html-type="submit">Submit</a-button>
+              </a-form-item>
+            </a-form>
+          </a-tab-pane>
+          <a-tab-pane key="3" tab="Logs">
+            <div :style="{ maxHeight: '300px', overflowY: 'auto' }">
+              <a-timeline :style="{ marginTop: '20px' }">
+                <a-timeline-item color="red" v-for="item in userAccountState.logList" :key="item.log_id">
+                  <p>{{ item.log_updated }}</p>
+                  <div>
+                    <p>{{ item.log_description }}</p>
+                  </div>
+                </a-timeline-item>
+              </a-timeline>
+            </div>
+          </a-tab-pane>
         </a-tabs>
-
       </a-card>
     </a-col>
   </a-row>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, reactive } from "@vue/reactivity";
+import { notification } from "ant-design-vue";
+import { onMounted } from "vue";
+import Flex from "../components/Flex.vue";
+import useUserAccount from "../hooks/useUserAccount";
+
+import { useUserStore } from "../stores/user";
 
 const activeKey = ref("1");
 
+const userStore = useUserStore();
 const formState = reactive({
-  username: '',
-  password: '',
-  remember: true,
+  password: "",
+  confirm_password: "",
 });
 
-const onFinish = values => {
-  console.log('Success:', values);
+const formProfile = reactive({
+  user_displayname: "",
+  user_tel: "",
+});
+const { onGetLogs, userAccountState } = useUserAccount();
+
+onMounted(() => {
+  onGetLogs();
+  userStore.getUserInfo().then(() => {
+    formProfile.user_displayname = userStore.info.user_displayname;
+    formProfile.user_tel = userStore.info.user_tel;
+  });
+});
+const onChangePassword = async (values: any) => {
+  userStore
+    .changePassword(values.password, values.confirm_password)
+    .then((word: any) => {
+      notification.success({
+        message: "Success",
+        description: word,
+      });
+
+      formState.password = "";
+      formState.confirm_password = "";
+    })
+    .catch((error) => {
+      console.log(error);
+      notification.error({
+        message: "Error",
+        description: error,
+      });
+    });
 };
 
-const onFinishFailed = errorInfo => {
-  console.log('Failed:', errorInfo);
+const onChangeProfile = (values: any) => {
+  userStore
+    .updateProfile(values)
+    .then((word: any) => {
+      notification.success({
+        message: "Success",
+        description: word,
+      });
+    })
+    .catch((error) => {
+      notification.error({
+        message: "Error",
+        description: error,
+      });
+    });
+};
+
+const onFinishFailed = (errorInfo: any) => {
+  console.log("Failed:", errorInfo);
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
