@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-list class="demo-loadmore-list" item-layout="horizontal" :data-source="stateAsRef">
+    <a-list class="demo-loadmore-list" item-layout="horizontal" :data-source="props.items">
       <template #loadMore>
         <div :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }"></div>
       </template>
@@ -38,7 +38,6 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(["delete"]);
-const stateAsRef = ref(props.items);
 </script>
 
 <style lang="scss" scoped></style>

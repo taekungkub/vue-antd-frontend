@@ -27,6 +27,9 @@ export const useCartStore = defineStore({
       if (i > -1) this.rawItems.splice(i, 1);
     },
     purchaseItems() {},
+    clearItems() {
+      this.rawItems = [];
+    },
   },
   getters: {
     items: (state) => state.rawItems,

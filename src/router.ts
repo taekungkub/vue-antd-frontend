@@ -32,11 +32,7 @@ const routes = [
         name: "Shop",
         component: () => import("./views/Shopping/index.vue"),
       },
-      {
-        path: "/checkout",
-        name: "Checkout",
-        component: () => import("./views/Checkout/index.vue"),
-      },
+
       {
         path: "/manage-user",
         name: "ManageUser",
@@ -87,6 +83,15 @@ const routes = [
           roles: ["admin", "staff"],
         },
       },
+      {
+        path: "/orders",
+        name: "OrderUser",
+        component: () => import("./views/Order/OrderUser.vue"),
+        meta: {
+          roles: ["admin", "staff", "user"],
+        },
+      },
+
       {
         path: "/permission/admin",
         name: "PermissionAdmin",

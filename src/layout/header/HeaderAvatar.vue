@@ -14,20 +14,20 @@
             <span>Profile</span>
           </router-link>
         </a-menu-item>
-        <div v-permission="['user']">
+        <div v-permission="['user', 'admin', 'staff']">
           <a-menu-item>
-            <router-link to="/checkout">
+            <router-link to="/orders">
               <i class="bx bx-cart" style="margin-right: 12px"></i>
-              <span>Checkout</span>
+              <span>Orders</span>
             </router-link>
           </a-menu-item>
         </div>
-        <a-menu-item>
+        <!-- <a-menu-item>
           <router-link to="/account/setting">
             <i class="bx bx-cog" style="margin-right: 12px"></i>
             <span>Setting</span>
           </router-link>
-        </a-menu-item>
+        </a-menu-item> -->
         <a-menu-divider />
         <a-menu-item @click="showPromiseConfirm()">
           <i class="bx bx-log-out" style="margin-right: 12px"></i>

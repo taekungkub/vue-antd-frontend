@@ -24,7 +24,6 @@ watch(
 
 <template>
   <a-config-provider :locale="currentLang">
-    {}
     <component :is="layout"></component>
   </a-config-provider>
 </template>

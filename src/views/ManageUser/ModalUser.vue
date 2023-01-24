@@ -138,7 +138,7 @@ const onFinish = async (values: any) => {
           user_tel: formState.user.user_tel,
           is_verify: formState.user.is_verify,
           role_id: formState.user.role_id,
-        } as UserTy,
+        } as FormAddUserTy,
         props.item?.id
       );
       if (res) {

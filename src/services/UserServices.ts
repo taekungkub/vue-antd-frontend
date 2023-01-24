@@ -22,10 +22,9 @@ export default {
   removeUser(id: string) {
     return Api.delete("/users/" + id);
   },
-  updateUser(user: UserTy, id?: string) {
-    console.log(user);
+  updateUser(formState: FormAddUserTy, id?: string | number) {
     return Api.put("/users/" + id, {
-      ...user,
+      ...formState,
     });
   },
 };
