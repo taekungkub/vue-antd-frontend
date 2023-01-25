@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { Modal } from "ant-design-vue";
+import { Modal, notification } from "ant-design-vue";
 import { createVNode, onMounted, ref, watch } from "vue";
 import OrderServices from "../../services/OrderServices";
 import { useUserStore } from "../../stores/user";
@@ -63,8 +63,8 @@ const columns = [
 
   {
     title: "Total Price",
-    key: "total_price",
-    dataIndex: "total_price",
+    key: "total",
+    dataIndex: "total",
   },
   {
     title: "Date",
@@ -131,6 +131,7 @@ async function handleModal(mode: string, item: OrderTy) {
   } else if (mode === "edit") {
     editVisible.value = true;
     selectedRows.value = item;
+    console.log(item);
     value1.value = item.status;
   }
 }
@@ -154,13 +155,17 @@ async function removeOrder(record: OrderTy) {
     Modal.confirm({
       title: "Do you want to delete these items?",
       async onOk() {
-        await OrderServices.removeOrder(record.id);
+        await OrderServices.removeOrder(record.id as string, record);
         getOrders();
       },
       onCancel() {},
     });
   } catch (error) {
     console.log(error);
+    notification["error"]({
+      message: "Error",
+      description: error as string,
+    });
   }
 }
 </script>

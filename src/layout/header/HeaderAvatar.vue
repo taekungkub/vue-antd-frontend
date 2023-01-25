@@ -38,7 +38,7 @@
   </a-dropdown>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { useUserStore } from "../../stores/user";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { createVNode } from "vue";
@@ -59,7 +59,7 @@ function showPromiseConfirm() {
           setTimeout(() => {
             user.logout();
             router.push("/login");
-            resolve();
+            resolve("");
           }, 500);
         });
       } catch {

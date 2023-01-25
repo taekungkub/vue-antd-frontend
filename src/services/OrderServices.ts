@@ -10,11 +10,13 @@ export default {
     return Api.get(`/orders/user/${id}`);
   },
 
-  createOrder(items: any, user_id: string | number, status: string, payment: string) {
+  createOrder(items: any, user_id: string | number, status: string, payment: string, totalPrice: string | number) {
     return Api.post("/orders", {
       user_id: user_id,
       status: status,
       payment: payment,
+      total: totalPrice,
+
       order_product: items,
     });
   },
@@ -23,7 +25,10 @@ export default {
       ...item,
     });
   },
-  removeOrder(id?: string | number) {
-    return Api.delete(`/orders/${id}`);
+  removeOrder(id: string | number, order: OrderTy) {
+    console.log(order);
+    return Api.post(`/orders/${id}`, {
+      order: order,
+    });
   },
 };

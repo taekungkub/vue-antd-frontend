@@ -22,7 +22,6 @@
             <HeaderCart />
             <HeaderNotice />
             <HeaderLang />
-
             <span @click="toggleTheme()" :style="{ cursor: 'pointer' }">
               <a-tooltip :title="`${currentTheme.charAt(0).toUpperCase() + currentTheme.slice(1)} Mode`">
                 <FireOutlined :style="{ fontSize: '22px' }" v-if="currentTheme === theme.dark" />
@@ -68,7 +67,6 @@ import { FireOutlined, StarOutlined } from "@ant-design/icons-vue";
 
 const route = useRoute();
 const { collapsed } = useSidebar();
-
 let { theme, currentTheme } = useTheme();
 
 function toggleTheme() {

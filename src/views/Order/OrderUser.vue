@@ -52,8 +52,8 @@ const columns = [
 
   {
     title: "Total Price",
-    key: "total_price",
-    dataIndex: "total_price",
+    key: "total",
+    dataIndex: "total",
   },
   {
     title: "Date",

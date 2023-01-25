@@ -61,6 +61,7 @@ import ProductServices from "../../services/ProductServices";
 import { useUserStore } from "../../stores/user";
 import { useRoute } from "vue-router";
 import { ProductTy } from "../../types/ProductTy";
+import router from "../../router";
 
 interface EnumModeTy {
   create: string;
@@ -90,7 +91,6 @@ async function getProductByID(id: string) {
   try {
     const res = await ProductServices.getProductById(id);
     if (res) {
-      console.log(res.data);
       mode.value = "update";
       formState.id = res.data.id;
       formState.title = res.data.title;
@@ -124,11 +124,11 @@ const onSubmit = async () => {
   } else if (mode.value === enumMode.update) {
     try {
       console.log("submit!");
-      console.log(formState);
       formState.userId = user.info.id.toString();
       formState.category_id = 1;
       const res = await ProductServices.updateProduct(formState, formState.id);
       if (res.data) {
+        router.back();
         message.success("Add successfully");
       }
     } catch (error: any) {

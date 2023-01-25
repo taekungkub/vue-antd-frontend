@@ -23,6 +23,7 @@ import OrderServices from "../../services/OrderServices";
 import { useUserStore } from "../../stores/user";
 import { OrderTy } from "../../types/OrderTy";
 import { watch } from "vue";
+import { notification } from "ant-design-vue";
 const cartStore = useCartStore();
 const router = useRouter();
 const user = useUserStore();
@@ -35,11 +36,15 @@ async function onCheckout(items: any) {
   try {
     // router.push('/checkout')
 
-    const res = await OrderServices.createOrder(items, user.info.id, "placed", "credit");
+    await OrderServices.createOrder(items, user.info.id, "placed", "credit", cartStore.totalPrice);
 
     cartStore.clearItems();
   } catch (error) {
     console.log(error);
+    notification["error"]({
+      message: "Error",
+      description: error as string,
+    });
   }
 }
 
