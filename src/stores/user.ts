@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import jwt_decode from "jwt-decode";
 import { UserTy } from "../types/UserTy";
 import AuthServices from "../services/AuthServices";
+import { LogTy } from "../types/LogTy";
 
 export const useUserStore = defineStore({
   id: "user",
@@ -9,6 +10,7 @@ export const useUserStore = defineStore({
     token: "",
     role: "",
     info: {} as UserTy,
+    logList: [] as Array<LogTy>,
   }),
 
   actions: {
@@ -108,6 +110,12 @@ export const useUserStore = defineStore({
           return false;
         }
       }
+    },
+    async getLogUser() {
+      try {
+        const res = await AuthServices.profileLog();
+        this.logList = res.data;
+      } catch (error) {}
     },
   },
   getters: {

@@ -8,7 +8,7 @@
         </Flex>
         <div :style="{ textAlign: 'center' }">
           <h2 style="margin-top: 10px !important">{{ userStore.info.user_displayname }}</h2>
-          <h2>Status: {{ userStore.info.is_verify === 1 ? "Active" : "No active" }}</h2>
+          <h2>Status: {{ !!userStore.info.is_verify ? "Active" : "No active" }}</h2>
           <h2>Role: {{ userStore.info.role_title }}</h2>
         </div>
         <a-divider orientation="left" orientation-margin="0px"> Infomation</a-divider>
@@ -55,8 +55,8 @@
           <a-tab-pane key="3" tab="Logs">
             <div :style="{ maxHeight: '300px', overflowY: 'auto' }">
               <a-timeline :style="{ marginTop: '20px' }">
-                <a-timeline-item color="red" v-for="item in userAccountState.logList" :key="item.log_id">
-                  <p>{{ item.log_updated }}</p>
+                <a-timeline-item color="red" v-for="item in userStore.logList" :key="item.log_id">
+                  <p>{{ item }}</p>
                   <div>
                     <p>{{ item.log_description }}</p>
                   </div>
@@ -75,7 +75,6 @@ import { ref, reactive } from "@vue/reactivity";
 import { notification } from "ant-design-vue";
 import { onMounted } from "vue";
 import Flex from "../components/Flex.vue";
-import useUserAccount from "../hooks/useUserAccount";
 
 import { useUserStore } from "../stores/user";
 
@@ -91,10 +90,9 @@ const formProfile = reactive({
   user_displayname: "",
   user_tel: "",
 });
-const { onGetLogs, userAccountState } = useUserAccount();
 
 onMounted(() => {
-  onGetLogs();
+  userStore.getLogUser();
   userStore.getUserInfo().then(() => {
     formProfile.user_displayname = userStore.info.user_displayname;
     formProfile.user_tel = userStore.info.user_tel;
