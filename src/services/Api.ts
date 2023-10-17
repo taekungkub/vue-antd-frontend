@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useUserStore } from "../stores/user";
+import AuthServices from "./AuthServices";
 
 const baseUrl = "http://localhost:8000";
 
@@ -10,19 +11,34 @@ const Api = axios.create({
   },
 });
 
-Api.interceptors.request.use(
-  (config: any) => {
-    const user = useUserStore();
+let refresh = false;
 
+Api.interceptors.request.use(
+  async (config: any) => {
+    const user = useUserStore();
     if (user.isAuthenticated) {
       config.headers["Authorization"] = `Bearer ${user.token}`;
-      user.checkTokenExpired();
+
+      if (user.isExpired(user.token) && !refresh) {
+        refresh = true;
+        try {
+          console.log("refresh new token");
+          const res = await AuthServices.refreshToken(user.refresh_token);
+          const { access_token } = res.data;
+          config.headers["Authorization"] = `Bearer ${access_token}`;
+          user.updateToken(access_token, user.refresh_token);
+        } catch (error) {
+          user.logout();
+        }
+      } else if (user.isExpired(user.refresh_token)) {
+        console.log("refresh token expired");
+        user.logout();
+      }
 
       if (config.isUploadFile) {
         config.headers["Content-Type"] = "multipart/form-data";
       }
-
-      return config;
+      refresh = false;
     }
 
     return config;
@@ -43,8 +59,6 @@ Api.interceptors.response.use(
     }
   },
   (error) => {
-    console.log("err" + error);
-
     return Promise.reject(error);
   }
 );

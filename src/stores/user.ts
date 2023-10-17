@@ -1,124 +1,130 @@
-import { defineStore } from "pinia";
-import jwt_decode from "jwt-decode";
-import { UserTy } from "../types/UserTy";
-import AuthServices from "../services/AuthServices";
-import { LogTy } from "../types/LogTy";
+import { defineStore } from "pinia"
+import jwt_decode from "jwt-decode"
+import { UserTy } from "../types/UserTy"
+import AuthServices from "../services/AuthServices"
+import { LogTy } from "../types/LogTy"
 
 export const useUserStore = defineStore({
   id: "user",
   state: () => ({
     token: "",
+    refresh_token: "",
     role: "",
     info: {} as UserTy,
     logList: [] as Array<LogTy>,
+    isLoadingUser: Boolean(false),
   }),
 
   actions: {
     login(email: string, password: string) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await AuthServices.login(email, password);
+          const res = await AuthServices.login(email, password)
           if (res.data) {
-            const { token } = res.data;
-            const decoded: UserTy = jwt_decode(token);
-
-            this.$patch({
-              token: token,
-              role: decoded.role_title,
-            });
-
-            window.localStorage.setItem(
-              "auth_data",
-              JSON.stringify({
-                token: token,
-              })
-            );
-            resolve(res.data);
+            const { access_token, refresh_token } = res.data
+            this.updateToken(access_token, refresh_token)
+            resolve(res.data)
           }
         } catch (error) {
-          reject(error);
+          reject(error)
         }
-      });
+      })
     },
 
     tryAutoLogin() {
       return new Promise((resolve, reject) => {
-        const authData = localStorage.getItem("auth_data");
-        if (!authData) return;
-        const { token } = JSON.parse(authData);
+        const authData = localStorage.getItem("auth_data")
+        if (!authData) return
+        const { access_token, refresh_token } = JSON.parse(authData)
 
-        if (token) {
-          const decoded: UserTy = jwt_decode(token);
-          this.$patch({
-            token: token,
-            role: decoded.role_title,
-          });
-          resolve(token);
+        if (access_token) {
+          this.updateToken(access_token, refresh_token)
+
+          resolve(access_token)
         }
-      });
+      })
     },
     logout() {
-      window.localStorage.removeItem("auth_data");
+      window.localStorage.removeItem("auth_data")
       this.$patch({
         token: "",
-        role: "",
+        refresh_token: "",
         info: {},
-      });
+        role: "",
+        logList: [],
+      })
     },
     updateProfile(userData: any) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await AuthServices.changeProfile(userData);
+          const res = await AuthServices.changeProfile(userData)
           if (res.data) {
-            resolve("done");
+            resolve("done")
           }
         } catch (error) {
-          reject(error);
+          reject(error)
         }
-      });
+      })
     },
     async getUserInfo() {
-      const res = await AuthServices.profile();
-      if (res.data) {
-        const userData = res.data;
+      try {
+        this.isLoadingUser = true
+        const res = await AuthServices.profile()
+        const userData: UserTy = res.data
         this.$patch({
+          role: userData.role_title,
           info: {
             ...userData,
           },
-        });
-        return Promise.resolve(res.data);
+        })
+        this.isLoadingUser = false
+        return Promise.resolve(this.info)
+      } catch (error) {
+        this.isLoadingUser = false
+
+        return Promise.reject(error)
       }
     },
     changePassword(password: string, cfPassword: string) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await AuthServices.changePassword(password, cfPassword);
+          const res = await AuthServices.changePassword(password, cfPassword)
           if (res.data) {
-            resolve(res.data);
+            resolve(res.data)
           }
         } catch (error) {
-          reject(error);
+          reject(error)
         }
-      });
+      })
     },
-    checkTokenExpired() {
-      if (this.token) {
-        let { exp }: any = jwt_decode(this.token);
-        if (Date.now() >= exp * 1000) {
-          console.log("token is expired");
-          this.logout();
-          return false;
-        }
-      }
+    isExpired(token: string) {
+      let { exp }: any = jwt_decode(token)
+      if (Date.now() > exp * 1000) return true
+      else return false
+    },
+
+    updateToken(token: string, refresh_token: string) {
+      this.$patch({
+        token: token,
+        refresh_token: refresh_token,
+      })
+
+      window.localStorage.setItem(
+        "auth_data",
+        JSON.stringify({
+          access_token: token,
+          refresh_token: refresh_token,
+        })
+      )
     },
     async getLogUser() {
       try {
-        const res = await AuthServices.profileLog();
-        this.logList = res.data;
+        const res = await AuthServices.profileLog()
+        this.logList = res.data
       } catch (error) {}
     },
   },
   getters: {
     isAuthenticated: (state) => !!state.token,
   },
-});
+})

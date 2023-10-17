@@ -1,8 +1,8 @@
-import { computed, nextTick, toRefs } from "vue";
-import { createWebHistory, createRouter } from "vue-router";
-import { useUserStore } from "./stores/user";
-import useRolePermission from "./config/useRolePermission";
-const { ROLE_PERMISSION } = useRolePermission();
+import { computed, nextTick, toRefs } from "vue"
+import { createWebHistory, createRouter } from "vue-router"
+import { useUserStore } from "./stores/user"
+import useRolePermission from "./config/useRolePermission"
+const { ROLE_PERMISSION } = useRolePermission()
 
 const routes = [
   {
@@ -25,7 +25,7 @@ const routes = [
       {
         path: "/profile",
         name: "Profile",
-        component: () => import("./views/Profile.vue"),
+        component: () => import("./views/account/Profile.vue"),
         meta: {
           requiresAuth: true,
         },
@@ -157,29 +157,40 @@ const routes = [
       layout: "empty",
     },
   },
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+})
 
 router.beforeEach(async (to: any, from: any) => {
-  const user = useUserStore();
-
-  user.checkTokenExpired();
-
+  const user = useUserStore()
+  //if refresh page check load user
+  if (to.meta.roles && !user.info.role_title && user.isAuthenticated) {
+    try {
+      await user.getUserInfo()
+      if (to.meta.roles) {
+        if (!to.meta.roles.includes(user.role)) {
+          return { path: "/403" }
+        }
+      }
+    } catch (error) {
+      return { path: "/403" }
+    }
+    return
+  }
   if (to.meta.requiresAuth && !user.isAuthenticated) {
-    return { path: "/login" };
+    return { path: "/login" }
   } else if (to.meta.requiresUnauth && user.isAuthenticated) {
-    return { path: "/" };
+    return { path: "/" }
   } else if (to.meta.requiresAuth && user.isAuthenticated) {
     if (to.meta.roles) {
       if (!to.meta.roles.includes(user.role)) {
-        return { path: "/403" };
+        return { path: "/403" }
       }
     }
   }
-});
+})
 
-export default router;
+export default router

@@ -4,7 +4,7 @@
       <a-card :style="{ borderRadius: '8px' }">
         <a-divider orientation="left" orientation-margin="0px"> Abount Me</a-divider>
         <Flex align-items="center" :justify="'center'">
-          <a-avatar :size="120" src="https://joeschmoe.io/api/v1/random" :style="{ border: '2px solid red' }" />
+          <a-avatar :size="120" src="https://xsgames.co/randomusers/avatar.php?g=pixel" :style="{ border: '2px solid red' }" />
         </Flex>
         <div :style="{ textAlign: 'center' }">
           <h2 style="margin-top: 10px !important">{{ userStore.info.user_displayname }}</h2>
@@ -27,8 +27,8 @@
                 <a-input v-model:value="formProfile.user_displayname" />
               </a-form-item>
               <div class="mb-1">Telephone</div>
-              <a-form-item name="user_tel" :rules="[{ required: true, type: 'number' }]">
-                <a-input v-model:value.number="formProfile.user_tel" />
+              <a-form-item name="user_tel" :rules="[{ required: true }]">
+                <a-input v-model:value="formProfile.user_tel" />
               </a-form-item>
 
               <a-form-item>
@@ -56,7 +56,7 @@
             <div :style="{ maxHeight: '300px', overflowY: 'auto' }">
               <a-timeline :style="{ marginTop: '20px' }">
                 <a-timeline-item color="red" v-for="item in userStore.logList" :key="item.log_id">
-                  <p>{{ item }}</p>
+                  <p>{{ item.log_description }}</p>
                   <div>
                     <p>{{ item.log_description }}</p>
                   </div>
@@ -74,9 +74,9 @@
 import { ref, reactive } from "@vue/reactivity";
 import { notification } from "ant-design-vue";
 import { onMounted } from "vue";
-import Flex from "../components/Flex.vue";
+import Flex from "../../components/Flex.vue";
 
-import { useUserStore } from "../stores/user";
+import { useUserStore } from "../../stores/user";
 
 const activeKey = ref("1");
 
@@ -93,10 +93,8 @@ const formProfile = reactive({
 
 onMounted(() => {
   userStore.getLogUser();
-  userStore.getUserInfo().then(() => {
-    formProfile.user_displayname = userStore.info.user_displayname;
-    formProfile.user_tel = userStore.info.user_tel;
-  });
+  formProfile.user_displayname = userStore.info.user_displayname;
+  formProfile.user_tel = userStore.info.user_tel;
 });
 const onChangePassword = async (values: any) => {
   userStore

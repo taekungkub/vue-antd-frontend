@@ -1,7 +1,7 @@
 <template>
   <a-dropdown>
     <div class="header-avatar" style="cursor: pointer">
-      <a-avatar class="avatar" size="small" shape="circle" src="https://joeschmoe.io/api/v1/random" :style="{ border: '2px solid red' }" />
+      <a-avatar class="avatar" size="small" shape="circle" src="https://xsgames.co/randomusers/avatar.php?g=pixel" :style="{ border: '2px solid red' }" />
 
       <span class="name">{{ user.info.user_displayname }}</span>
     </div>

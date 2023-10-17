@@ -48,4 +48,9 @@ export default {
   profileLog() {
     return Api.get("/auth/profile/log");
   },
+  refreshToken(refresh_token: string) {
+    return Api.post("/auth/refresh-token", {
+      refresh_token: refresh_token,
+    });
+  },
 };
